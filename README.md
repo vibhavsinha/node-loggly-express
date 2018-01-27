@@ -52,6 +52,22 @@ function routeHandler(req, res) {
 }
 ```
 
+### Ignore useragent
+
+`config.ignoreUserAgent`
+
+It is better to ignore requests from user agents such as spiders or uptime
+monitors. This can also be useful to ignore during testing.
+
+Example: Ignore requests from curl and [apex ping](https://apex.sh/ping/)
+
+```
+let config = {
+  ...expressLogglyConfig,
+  ignoreUserAgent: /^(apex|curl)/,
+}
+```
+
 [8 Handy Tips to Consider When Logging in JSON](https://www.loggly.com/blog/8-handy-tips-consider-logging-json/)
 
 ## License
