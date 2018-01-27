@@ -9,13 +9,13 @@ let gitHead;
 let appVersion;
 
 const cmd = 'git describe --tags || git log --pretty="%h" -n1 HEAD';
-const gt = exec(cmd, (err, stdout, stderr) => {
+exec(cmd, (err, stdout, stderr) => {
   if (!err) {
-    gitVersion = stdout;
+    gitHead = stdout;
   }
 });
-const package = require(path.join(process.cwd(), 'package.json'));
-appVersion = package.version;
+const packageJson = require(path.join(process.cwd(), 'package.json'));
+appVersion = packageJson.version;
 
 
 exports.default = (config) => {
@@ -25,6 +25,10 @@ exports.default = (config) => {
     tags: config.tokens,
     json: true,
   };
+  winston.add(winston.transports.Loggly, logglyParams);
+  if (!config.ignoreUserAgent) {
+    config.ignoreUserAgent = /^curl/;
+  }
   return function(req, res, next) {
     req.expressLoggly = {
       startTime: (new Date()).getTime(),
@@ -32,7 +36,7 @@ exports.default = (config) => {
     };
     onFinished(res, function(err, res) {
       let userAgent = req.headers['user-agent'];
-      if (userAgent.startsWith('apex')) {
+      if (userAgent.match(config.ignoreUserAgent)) {
         return;
       }
       let logObject = {
@@ -46,13 +50,11 @@ exports.default = (config) => {
         status: res.statusCode,
         length: res.getHeader('content-length'),
         responseTime: (new Date()).getTime() - req.expressLoggly.startTime,
-        gitVersion,
+        gitHead,
         appVersion,
       };
       winston.log('info', logObject);
     });
     next();
   };
-}
-
-winston.add(winston.transports.Loggly, logglyParams);
+};
