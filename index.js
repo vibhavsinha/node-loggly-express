@@ -9,7 +9,7 @@ let gitHead;
 let appVersion;
 
 const cmd = 'git describe --tags || git log --pretty="%h" -n1 HEAD';
-exec(cmd, (err, stdout, stderr) => {
+exec(cmd, (err, stdout) => {
   if (!err) {
     gitHead = stdout;
   }
@@ -22,7 +22,7 @@ exports.default = (config) => {
   let logglyParams = {
     token: config.token,
     subdomain: config.subdomain,
-    tags: config.tokens,
+    tags: config.tags,
     json: true,
   };
   winston.add(winston.transports.Loggly, logglyParams);
