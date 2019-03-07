@@ -1,6 +1,6 @@
 {
   "name": "node-loggly-express",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "log app parameters to loggly",
   "main": "index.js",
   "repository": "git@github.com:vibhavsinha/node-loggly-express",

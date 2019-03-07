@@ -36,7 +36,7 @@ exports.default = (config) => {
     };
     onFinished(res, function(err, res) {
       let userAgent = req.headers['user-agent'];
-      if (userAgent.match(config.ignoreUserAgent)) {
+      if (!userAgent || userAgent.match(config.ignoreUserAgent)) {
         return;
       }
       let logObject = {
